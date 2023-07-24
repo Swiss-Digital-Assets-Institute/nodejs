@@ -7,7 +7,7 @@ ENV npm_config_unsafe_perm true
 
 RUN microdnf --nodocs -y upgrade && \
     microdnf --nodocs -y install fedora-repos-modular && \
-    echo -e "[nodejs]\nname=nodejs\nstream=${NODEJS_VERSION}\nprofiles=\nstate=enabled\n" > /etc/dnf/modules.d/nodejs.module && \
+    printf "[nodejs]\nname=nodejs\nstream=%s\nprofiles=\nstate=enabled\n" "${NODEJS_VERSION}" > /etc/dnf/modules.d/nodejs.module && \
     microdnf --nodocs -y install \
     autoconf \
     automake \
