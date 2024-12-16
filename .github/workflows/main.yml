@@ -3,10 +3,7 @@ on:
   push:
     branches:
       - main
-  pull_request:
-  schedule:
-    - cron: "0 2 * * 0"
-
+  
 env:
   DOCKER_BUILDKIT: 1
   REGISTRY: ghcr.io
