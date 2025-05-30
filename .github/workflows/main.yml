@@ -7,7 +7,6 @@ on:
 env:
   DOCKER_BUILDKIT: 1
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   main:
@@ -31,6 +30,9 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare lowercase image name
+        run: echo "IMAGE_NAME=$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
