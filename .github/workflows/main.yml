@@ -2,7 +2,7 @@ name: Docker build and push
 on:
   push:
     branches:
-      - main
+      - feature/multi-platform-docker
   
 env:
   DOCKER_BUILDKIT: 1
@@ -38,10 +38,11 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Build and push Docker image
+      - name: Build and push multi-platform Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:multi-platform
           labels: ${{ steps.meta.outputs.labels }}
