@@ -2,3 +2,5 @@ ignored:
   - DL3041 # Specify version with dnf install -y <package>-<version>
   - DL4006 # Set the SHELL option -o pipefail before RUN with a pipe in
   - DL3040 # `dnf clean all` missing after dnf command (as microdnf is used)
+  - DL3008 # Pin versions in apt get install (not practical for all packages)
+  - DL3015 # Avoid additional packages by specifying `--no-install-recommends` (already used)
