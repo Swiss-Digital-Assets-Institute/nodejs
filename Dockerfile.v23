@@ -1,0 +1,29 @@
+FROM debian:bookworm-slim
+
+ARG NODEJS_VERSION=23
+
+ENV npm_config_loglevel warn
+ENV npm_config_unsafe_perm true
+
+# Install dependencies and Node.js v23
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    autoconf \
+    automake \
+    bash \
+    ca-certificates \
+    curl \
+    bc \
+    g++ \
+    git \
+    jq \
+    libgl1-mesa-glx \
+    file \
+    make \
+    postgresql-client \
+    which \
+    gnupg \
+    && curl -fsSL https://deb.nodesource.com/setup_${NODEJS_VERSION}.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* 

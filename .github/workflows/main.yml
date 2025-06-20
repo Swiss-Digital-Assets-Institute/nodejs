@@ -15,14 +15,25 @@ jobs:
 
     strategy:
       matrix:
-        node: [20]
+        node: [20, 23]
 
     steps:
       - uses: actions/checkout@v3
 
+      - name: Set Dockerfile path
+        id: dockerfile
+        run: |
+          if [ "${{ matrix.node }}" = "23" ]; then
+            echo "dockerfile=Dockerfile.v23" >> $GITHUB_OUTPUT
+            echo "tag=v23" >> $GITHUB_OUTPUT
+          else
+            echo "dockerfile=Dockerfile" >> $GITHUB_OUTPUT
+            echo "tag=v${{ matrix.node }}" >> $GITHUB_OUTPUT
+          fi
+
       - uses: hadolint/hadolint-action@v2.0.0
         with:
-          dockerfile: Dockerfile
+          dockerfile: ${{ steps.dockerfile.outputs.dockerfile }}
           config: hadolint-ci.yaml
 
       - name: Log in to the Container registry
@@ -37,11 +48,18 @@ jobs:
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=${{ steps.dockerfile.outputs.tag }},enable={{is_default_branch}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
+          file: ${{ steps.dockerfile.outputs.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
